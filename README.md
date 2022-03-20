@@ -240,10 +240,275 @@ La necesidad de utilizar bibliotecas de clases obliga a su aprendizaje y entrena
 ## Pilares de la POO: Abstracción y Encapsulamiento
 
  ### 8. Qué es abstracción
+
+Es la forma de abstraer los datos esenciales de un objeto, para (con el fin de) crear su molde, su Clase, su Prototipo. Abstraer hace referencia a la forma de separar o aislar los datos, rasgos, cualidades, propiedades o características esenciales, para que se puedan crear y formar instancias de dicho molde, o sea, la clase. Crear el prototipo es el objetivo de la abstracción, pues cada elemento u objeto, debe poderse abstraer para que podamos reutilizar el código, o sea crear instancias de esta clase.
+
  ### 9. Abstracción en JavaScript
+
+Creando las clases y sus instancias
+
+```js
+//CREANDO LA CLASE ESTUDIANTE
+export default class Student{
+    constructor({
+        name,
+        email,
+        username,
+        twitter = undefined,
+        instagram = undefined,
+        facebook = undefined,
+        aprovedCourses = [],
+        learningPaths = [],
+    }){
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.socialMedia = {
+            twitter,
+            instagram,
+            facebook,
+        };
+        this.aprovedCourses = aprovedCourses;
+        this.learningPaths = learningPaths;
+    }
+
+    addAprovedCourse(aprovedCourse){
+        this.aprovedCourses.push(aprovedCourse);
+    }
+}
+
+//CLASE RUTA DE APRENDIZAJE
+export default class LearningPath{
+    constructor({
+        pathName,
+        courses = [],
+    }){
+        this.pathName = pathName;
+        this.courses = courses;
+    }
+
+    addCourse(newCourse){
+        this.courses.push(newCourse)
+    }
+}
+
+//CLASE CURSO
+export default class Course {
+    constructor({
+        courseName,
+        teacher,
+        classes = [],
+    }){
+        this.courseName = courseName;
+        this.teacher = teacher;
+        this.classes = classes;
+    }
+}
+
+//***************************************
+// INSTANCIAS
+//***************************************
+//CREACIÓN DE CURSOS
+const coursePremierPro = new Course({
+    courseName: 'Curso de Adobe Premier Pro',
+    teacher: 'Anny Videon',
+    classes: [
+        'Introducción a premiere Pro',
+        'Que es premiere pro',
+    ]
+})
+
+const courseJS = new Course({
+    courseName: 'JavaScript',
+    teacher: 'JuanDC'
+})
+
+const coursePHP = new Course({
+    courseName: 'Curso de PHP',
+    teacher: 'annyCode',
+})
+
+const coursePowerBI = new Course({
+    courseName: 'Curso de Power BI',
+    teacher: 'Jorge Perez'
+})
+
+const courseVueJS = new Course({
+    courseName: 'Curso de VueJS',
+    teacher: 'GNDX Oscar Barajas'
+})
+
+//CREACIÓN DE LAS RUTAS
+const escuelaWeb = new LearningPath({
+    pathName: 'Escuela de Web Development',
+    courses: [
+        courseJS,
+        coursePHP,
+        courseVueJS,
+    ]
+})
+
+const escuelaData = new LearningPath({
+    pathName: 'Escuela de Datos',
+    courses: [
+        coursePowerBI,
+    ],
+})
+
+const escuelaVideoGames = new LearningPath({
+    pathName: 'Escuela de Video Juegos',
+    courses: [
+        coursePremierPro,
+    ]
+})
+
+
+//creando instancia de ESTUDIANTE
+const juan = new Student({
+    name: 'Juan',
+    username: 'juandc',
+    email: 'juanito@mail.com',
+    instagram: 'juanitodc',
+    learningPaths: [
+        escuelaData,
+        escuelaVideoGames,
+    ]
+})
+
+//Agregando cursos
+juan.addAprovedCourse(coursePHP);
+```
+
  ### 10. Qué es encapsulamiento
+
+¿Qué es encapsulamiento?
+Es guardar, proteger, guardar o limitar el acceso de cierto atributos y/o propiedades en nuestros prototipos y objetos.
+
+Cuando hablamos de **encapsulamiento **hablamos de:
+
+- Esconder métodos y atributos 👻
+- No permitir la alteración de métodos y atributos ❌
+
+**Encapsulamiento en JavaScript**
+
+- No permitir la alteración de métodos y atributos ❌
+
+*Formas de aplicar encapsulamiento en JavaScript*
+
+- Getters y setters 🖐
+- Namespaces 🙂
+- Object.defineProperties 🎈
+- Módulo de ES6 🤝
+
  ### 11. Getters y Setters en JavaScript
+
+**Qué son los getters y setters**
+Una función que obtiene un valor de una propiedad se llama getter y una que establece el valor de una propiedad se llama setter.
+
+Esta característica a sido implementada en ES2015, pudiendo modificar el funcionamiento normal de establecer u obtener el valor de una propiedad, a estas se les conoce como accessor properties.
+
+**Funcionamiento**
+En ocasiones queremos valores basados en otros valores, para esto los data accessors son bastante útiles.
+
+Para crearlos usamos los keywords get y set
+
+```js
+//teacher.js
+export default function Teacher (name, country, knowledge = []){
+    this._name = name;
+    this.country = country;
+    this.knowledge = knowledge
+}
+//getters and setters with Prototype
+Teacher.prototype = {
+    get name (){
+        return this._name;
+    },
+
+    set name(newName){
+        if(newName){
+            console.warn('Is not posible to change the teacher name.');
+        }
+    }
+}
+
+//course.js
+//CLASE CURSO
+export default class Course {
+    constructor({
+        courseName,
+        teacher,
+        classes = [],
+    }){
+        this._courseName = courseName;
+        this.teacher = teacher;
+        this.classes = classes;
+    }
+//getters and setters
+    get courseName(){
+        return this._courseName;
+    }
+
+    set courseName(newCourseName){
+        if(newCourseName === 'This is bad course'){
+            console.warn('Do not change the course name')
+        } else {
+            this._courseName = newCourseName;
+        }
+    }
+}
+```
+
  ### 12. Módulos de ECMAScript 6
+
+El uso de los módulos en JavaScript depende de las declaraciones ***Export*** e ***Import***.
+
+Para modular, solo basta que el archivo tenga la extensión ***.js***, pero el motor V8 que es el que corre en los navegadores, recomienda usar la extensión ***.mjs***
+
+- Esto es útil porque queda claro cuál archivo es modulo y cual no.
+- Asegura que los archivos de modulo sean tratados como tal por la extensión **Babel** o **Node.js**
+
+#### Exportar
+
+1. Colocar en frente de cada elemento la palabra ***export***
+
+   ```js
+   export function(){
+       //
+   }
+   ```
+
+   
+
+2. Exportar en una sola declaración al final del archivo modulo las características que se quieren exportar, ejemplo: 
+
+   ```js
+   export {PlatziClass, Student, LearningPaths};
+   ```
+
+#### Importar
+
+```js
+import {PlatziClass, Student, LearningPaths} from '/ruta';
+```
+
+#### Uso del módulo en HTML
+
+```js
+<script type="module" src="main.js"></script>
+```
+
+#### Renombrar exportaciones
+
+```js
+export { myFunction as awesomeFunction };
+```
+
+#### Renombrar importaciones
+
+```js
+import { myFunction as awesomeFunction };
+```
 
 ## Pilares de la POO: Herencia y Polimorfismo
 

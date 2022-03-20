@@ -79,6 +79,7 @@ peter.aproveCourse('Curso de C++');
 console.log(peter);
 
 //Otra manera de crear clases
+//Se le pasa un objeto al constructor
 class Person {
     constructor({
             name,
