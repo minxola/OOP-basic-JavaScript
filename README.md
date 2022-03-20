@@ -513,11 +513,249 @@ import { myFunction as awesomeFunction };
 ## Pilares de la POO: Herencia y Polimorfismo
 
  ### 13. Que es herencia
+
+**Don’t repeat yourself** es una filosofía que promueve la reducción de duplicación en programación, esto nos va a inculcar que no tengamos líneas de código duplicadas.
+Toda pieza de información nunca debería ser duplicada debido a que incrementa la dificultad en los cambios y evolución
+
+> **La herencia**
+> nos permite crear nuevas clases a partir de otras, se basa en modelos y conceptos de la vida real. También tenemos una jerarquía de padre e hijo.
+
+```js
+class Student ({
+    constructor(name) {
+        this.name;
+    }
+});
+ 
+class FreStudent extends Student {} ;
+```
+
+La palabra extends seguida de la clase madre, provoca que esta nueva clase hija herede todos los atributos y metodos de la clase madre
+
  ### 14. Herencia en JavaScript
+
+Creamos herencia para la clase Estudiante:
+
+Cuando pasamos las propiedades del elemento padre, solo usamos una palabra que representa al objeto que tiene como parámetro la clase padre, de otro modo tendía que pasarse uno por uno.
+
+```js
+//student.js
+//...code
+class FreeStudent extends Student{
+    //props hace referencia al objeto que tiene como parámtro la clase padre
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+        if(newCourse.isFree){
+            this.aprovedCourses.push(newCourse);
+        } else {
+            console.warn(this.name + ' You cant take this pay Course as a FREE STUDENT');
+        }
+    }
+}
+
+class BasicStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+        if(newCourse.lang !== 'english'){
+            this.aprovedCourses.push(newCourse);
+        } else {
+            console.warn(this.name + ' You only can take spanish courses as a BASIC STUDENT');
+        }
+    }
+}
+
+class ExpertStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+            this.aprovedCourses.push(newCourse);
+    }
+}
+
+export { Student, FreeStudent, BasicStudent, ExpertStudent };
+```
+
+**Haciendo uso de prototipos también podemos crear herencia:**
+
+Suponiendo que ya tenemos creada nuestra superclase (Student). Vamos a crear una clase (FreeStudent) que va a pasar los parámetros de inicialización al constructor de la superclase, para esto hacemos uso de la función `call()`.
+
+```javascript
+function FreeStudent(props) {
+  Student.call(this, props);
+}
+```
+
+Le pasamos como primer atributo el contexto de ejecución de nuestra nueva “clase” y como segundo parámetro los props, que son estas propiedades que recibiremos de inicialización.
+
+Después de esto, clonamos el prototipo de nuestra superclase en el prototipo de nuestra subclase:
+
+```js
+FreeStudent.prototype = Object.create(Student.prototype);
+```
+
+Por último, le agregamos cualquier función extra que deseemos agregar a la subclase:
+
+```javascript
+FreeStudent.prototype.approveCourse = function (newCourse) {
+  if (newCourse.isFree) {
+    this.approvedCourses.push(newCourse);
+  } else {
+    console.warn(`Sorry, ${this.name}, you can only take free courses`);
+  }
+}
+```
+
+----
+
+Otro ejemplo, cuando tenemos una clase padre con un objeto como parámetro, y queremos agregar alguna parámetro adicional.
+
+```js
+class SuperClass {
+    constructor({a, b}){
+        this.a = a;
+        this.b = b;
+    }
+    
+    display(){
+        console.log(this);
+    }
+}
+
+class childClass extends SuperClass{
+    constructor({c, ...props}){
+        super(props);
+        this.c = c;
+    }
+}
+
+let obj = new childClass({a:'one', b: 'two', c: 'three'});
+
+obj.display(); //childClass {a: 'one', b: 'two', c: 'three'}
+```
+
  ### 15. Que es polimorfismo
+
+Es como la herencia reloaded. Es como ‘La Herencia 2.0’. Es un pilar de la OOP. Lo que es importante es lo que se puede hacer con este: Permite a nuestras subclases cambiar o anular los comportamientos de los métodos y atributos del prototipo madre, de la clase madre. Aunque herede las propiedades, el polimorfismo permite cambiar su comportamiento.
+**Tipos:**
+
+1. Polimorfismo de Sobrecarga: ocurre cuando existen métodos con el mismo nombre y funcionalidad similar en clases totalmente independientes entre ellas.
+2. Polimorfismo Paramétrico: El polimorfismo paramétrico es la capacidad para definir varias funciones utilizando el mismo nombre, pero usando parámetros diferentes (nombre y/o tipo).
+3. Polimorfismo de Inclusión (JS): La habilidad para redefinir por completo el método de una superclase en una subclase.
+
  ### 16. Polimorfismo en JavaScript
+
+Creamos una clase adicional para comentarios:
+
+```js
+//comments.js
+export default class Comments {
+    constructor({
+        content,
+        studentName,
+        studentRole = 'student',
+    }){
+        this.content = content;
+        this.studentName = studentName;
+        this.studentRole = studentRole;
+        this.likes = 0;
+    }
+
+    publish(){
+        console.group('comment');
+            console.log(`${this.studentName} (${this.studentRole})`);
+            console.log(`Likes: ${this.likes}`);
+            console.log(`Say: ${this.content}`);
+        console.groupEnd('comment');
+    }
+}
+```
+
+Ahora en la clase estudiante definimos un método para hacer comentarios usando la clase comentarios:
+
+```js
+//student.js
+class Student{
+    //code...
+        publishComment(commentContent){
+            //instancia de comments
+            const comment = new Comments({
+                content: commentContent,
+                studentName: this.name,
+        });
+        comment.publish();
+    }
+    //code...
+}
+```
+
+Luego creamos en este mismo archivo la clase de profesor estudiante:
+
+```js
+//student.js
+//code...
+class TeacherStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse(newCourse){
+        this.aprovedCourses.push(newCourse);
+    }
+	
+    //POLIMORFISMO
+    //publicar comentarios, modificando el método de estudiante
+    publishComment(commentContent){
+        const comment = new Comments({
+            content: commentContent,
+            studentName: this.name,
+            studentRole: 'teacher',
+        })
+
+        comment.publish();
+    }
+}
+//code...
+```
+
+Luego podemos crear la instancia de profesor estudiante:
+
+```js
+//main.js
+//creando instancia de TEACHER STUDENT
+const freddy = new TeacherStudent({
+    name: 'Freddy Vega',
+    username: 'freddier',
+    email: 'freddier@mail.com',
+    instagram: 'freddyvega',
+    learningPaths: [escuelaWeb],
+})
+
+//publicar comentario
+freddy.publishComment('I am the big boss of Platzi!');
+
+console.log(freddy);
+```
 
 ## Próximos pasos
 
  ### 17. Curso Intermedio de POO en JavaScript
+
+
+
+#### Curso finalizado
+
+Ahora sabes:
+
+- Comprende cómo funcionan los objetos en JavaScript.
+- Descubre las ventajas de utilizar POO.
+- Ordena tu código con abstracción y encapsulamiento.
+- Reutiliza tu código con herencia y polimorfismo.
 

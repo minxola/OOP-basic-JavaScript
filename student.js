@@ -1,5 +1,7 @@
+import Comments from "./comments.js";
+
 //LA CLASE ESTUDIANTE
-export default class Student{
+class Student{
     constructor({
         name,
         email,
@@ -22,7 +24,7 @@ export default class Student{
         this.learningPaths = learningPaths;
     }
 
-    addAprovedCourse(aprovedCourse){
+    aproveCourse(aprovedCourse){
         this.aprovedCourses.push(aprovedCourse);
     }
 
@@ -32,7 +34,77 @@ export default class Student{
 
     set username (newUserName){
         if(newUserName){
-            console.error('It is not posible to change tha username');
+            console.error('It is not posible to change the username');
+        }
+    }
+
+    publishComment(commentContent){
+        const comment = new Comments({
+            content: commentContent,
+            studentName: this.name,
+        });
+        comment.publish();
+    }
+}
+
+class FreeStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+        if(newCourse.isFree){
+            this.aprovedCourses.push(newCourse);
+        } else {
+            console.warn(this.name + ' You cant take this pay Course as a FREE STUDENT');
         }
     }
 }
+
+class BasicStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+        if(newCourse.lang !== 'english'){
+            this.aprovedCourses.push(newCourse);
+        } else {
+            console.warn(this.name + ' You only can take spanish courses as a BASIC STUDENT');
+        }
+    }
+}
+
+class ExpertStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse (newCourse){
+            this.aprovedCourses.push(newCourse);
+    }
+}
+
+class TeacherStudent extends Student{
+    constructor(props){
+        super(props);
+    }
+
+    aproveCourse(newCourse){
+        this.aprovedCourses.push(newCourse);
+    }
+
+    publishComment(commentContent){
+        const comment = new Comments({
+            content: commentContent,
+            studentName: this.name,
+            studentRole: 'teacher',
+        })
+
+        comment.publish();
+    }
+}
+
+
+
+export { Student, FreeStudent, BasicStudent, ExpertStudent, TeacherStudent };

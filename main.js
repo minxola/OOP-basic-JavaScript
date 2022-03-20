@@ -1,7 +1,7 @@
 //PARA PODER EJECUTAR ESTE CÓDIGO ES NECESARIO CORRER UN SERVIDOR
 import Course from "./course.js";
 import LearningPath from "./learningPath.js";
-import Student from "./student.js";
+import {FreeStudent, BasicStudent, ExpertStudent, TeacherStudent} from "./student.js";
 import Teacher from "./teacher.js";
 
 
@@ -50,29 +50,36 @@ const coursePremierPro = new Course({
     classes: [
         'Introducción a premiere Pro',
         'Que es premiere pro',
-    ]
+    ],
+    isFree: true,
 })
 
 coursePremierPro._courseName = "This is bad course";
 
 const courseJS = new Course({
     courseName: 'JavaScript',
-    teacher: teacherJuanDC
+    teacher: teacherJuanDC,
+    isFree: false
 })
 
 const coursePHP = new Course({
     courseName: 'Curso de PHP',
     teacher: teacherAnnyCode,
+    isFree: false
 })
 
 const coursePowerBI = new Course({
     courseName: 'Curso de Power BI',
-    teacher: teacherPerez
+    teacher: teacherPerez,
+    isFree: false,
+    lang: 'english'
 })
 
 const courseVueJS = new Course({
     courseName: 'Curso de VueJS',
-    teacher: teacherBarajas
+    teacher: teacherBarajas,
+    isFree: true,
+    lang: 'english',
 })
 
 //CREACIÓN DE LAS RUTAS
@@ -101,7 +108,7 @@ const escuelaVideoGames = new LearningPath({
 
 
 //creando instancia de ESTUDIANTE
-const juan = new Student({
+const juan = new BasicStudent({
     name: 'Juan',
     username: 'juandc',
     email: 'juanito@mail.com',
@@ -110,14 +117,33 @@ const juan = new Student({
         escuelaData,
         escuelaVideoGames,
         escuelaWeb
-    ]
+    ],
 })
 
 juan.username = 'Carlos';
 
 //Agregando cursos
-juan.addAprovedCourse(coursePHP);
+juan.aproveCourse(courseVueJS);
+
+//publicar comentario
+juan.publishComment('Hello i am new here!');
+
+console.log(juan);
 
 
+//creando instancia de TEACHER STUDENT
+const freddy = new TeacherStudent({
+    name: 'Freddy Vega',
+    username: 'freddier',
+    email: 'freddier@mail.com',
+    instagram: 'freddyvega',
+    learningPaths: [escuelaWeb],
+})
 
-console.table(juan);
+//Agregando cursos
+freddy.aproveCourse(courseVueJS);
+
+//publicar comentario
+freddy.publishComment('I am the big boss of Platzi!');
+
+console.log(freddy);

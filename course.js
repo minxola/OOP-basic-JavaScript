@@ -4,10 +4,14 @@ export default class Course {
         courseName,
         teacher,
         classes = [],
+        isFree = false,
+        lang = 'spanish'
     }){
         this._courseName = courseName;
         this.teacher = teacher;
         this.classes = classes;
+        this.isFree = isFree;
+        this.lang = lang;
     }
 
     get courseName(){
